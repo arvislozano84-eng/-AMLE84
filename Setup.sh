@@ -1,9 +1,9 @@
-
 #!/bin/bash
 
 # --- CONFIGURACIÓN ---
-# Reemplaza la URL de abajo con tu enlace RAW de GitHub cuando lo tengas listo
-URL_KEYS="https://raw.githubusercontent.com/TuUsuario/tu-repo/main/keys.txt"
+URL_KEYS="https://raw.githubusercontent.com/arvislozano84-eng/-AMLE84/refs/heads/main/keys.txt"
+# URL de tu script en GitHub para el Auto-Update
+URL_SCRIPT="https://raw.githubusercontent.com/arvislozano84-eng/-AMLE84/refs/heads/main/setup.sh"
 
 # COLORES
 VERDE='\033[1;32m'
@@ -21,7 +21,6 @@ echo -e "${AZUL}━━━━━━━━━━━━━━━━━━━━━�
 echo -n "🔑 INGRESA TU KEY: "
 read user_key
 
-# Validación: Acepta @AMLE84 o lo que haya en tu GitHub
 if [[ "$user_key" == "@AMLE84" ]] || curl -s "$URL_KEYS" | grep -qw "$user_key"; then
     echo -e "${VERDE}✅ ACCESO CONCEDIDO.${NC}"
     sleep 2
@@ -39,26 +38,46 @@ optimizador() {
     sleep 2
 }
 
+contador_online() {
+    clear
+    echo -e "${AZUL}╔══════════════════════════════════════════════════╗${NC}"
+    echo -e "${AZUL}║${NC}       ${VERDE}👥 USUARIOS CONECTADOS - @amle84${NC}        ${AZUL}║${NC}"
+    echo -e "${AZUL}╚══════════════════════════════════════════════════╝${NC}"
+    CONEXIONES=$(ps -ef | grep -v grep | grep -c "bash")
+    echo -e "\n ${CYAN}📊 Sesiones activas actualmente:${NC} ${AMARILLO}$CONEXIONES${NC}"
+    echo -e "${AZUL}════════════════════════════════════════════════════${NC}"
+    echo -e "${VERDE} DETALLE DE CONEXIONES:${NC}"
+    ps -ef | grep "bash" | grep -v grep | awk '{print " • ID: " $2 " | Hora: " $5}'
+    echo -e "\n${AMARILLO}Presiona Enter para volver al menú...${NC}"
+    read
+}
+
 instalador_python() {
     clear
     echo -e "${AZUL}╔══════════════════════════════════════════════════╗${NC}"
     echo -e "${AZUL}║${NC}      ${VERDE}🐍 INSTALADOR DE PYTHON - @amle84${NC}       ${AZUL}║${NC}"
     echo -e "${AZUL}╚══════════════════════════════════════════════════╝${NC}"
     echo -e "${AMARILLO}📦 Descargando e instalando Python y Pip...${NC}"
-    
-    pkg update -y
-    pkg install python python-pip -y
-    
+    pkg update -y && pkg install python python-pip -y
     echo -e "\n${VERDE}✅ Python instalado con éxito.${NC}"
     python --version
     echo -e "${CYAN}Presiona Enter para volver...${NC}"
     read
 }
 
+actualizar_script() {
+    echo -e "${AMARILLO}🔄 Buscando actualizaciones en GitHub...${NC}"
+    wget -O setup.sh "$URL_SCRIPT" &> /dev/null
+    chmod +x setup.sh
+    echo -e "${VERDE}✅ Script actualizado. Reiniciando...${NC}"
+    sleep 2
+    ./setup.sh
+    exit
+}
+
 # --- 3. DISEÑO DEL MENÚ PRINCIPAL ---
 menu_principal() {
     clear
-    # Datos de sistema
     MEM_TOTAL=$(free -m | grep Mem | awk '{print $2}')
     MEM_USADA=$(free -m | grep Mem | awk '{print $3}')
     
@@ -82,8 +101,9 @@ menu_principal() {
     case $opcion in
         1) echo -e "${VERDE}Función en desarrollo...${NC}"; sleep 2; menu_principal ;;
         2) optimizador; menu_principal ;;
-        3) echo -e "${VERDE}Buscando usuarios online...${NC}"; sleep 2; menu_principal ;;
+        3) contador_online; menu_principal ;;
         4) instalador_python; menu_principal ;;
+        5) actualizar_script ;;
         0) echo -e "${ROJO}Saliendo... 👋${NC}"; exit 0 ;;
         *) echo -e "${ROJO}Opcion invalida${NC}"; sleep 1; menu_principal ;;
     esac
