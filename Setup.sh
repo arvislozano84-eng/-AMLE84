@@ -1,7 +1,8 @@
+
 #!/bin/bash
 
 # --- CONFIGURACIÓN ---
-# Reemplaza esto con tu link RAW de GitHub cuando lo tengas
+# Reemplaza la URL de abajo con tu enlace RAW de GitHub cuando lo tengas listo
 URL_KEYS="https://raw.githubusercontent.com/TuUsuario/tu-repo/main/keys.txt"
 
 # COLORES
@@ -20,7 +21,7 @@ echo -e "${AZUL}━━━━━━━━━━━━━━━━━━━━━�
 echo -n "🔑 INGRESA TU KEY: "
 read user_key
 
-# Si la llave es @AMLE84 (manual) o está en tu GitHub, entra.
+# Validación: Acepta @AMLE84 o lo que haya en tu GitHub
 if [[ "$user_key" == "@AMLE84" ]] || curl -s "$URL_KEYS" | grep -qw "$user_key"; then
     echo -e "${VERDE}✅ ACCESO CONCEDIDO.${NC}"
     sleep 2
@@ -29,10 +30,35 @@ else
     exit 1
 fi
 
-# --- 2. DISEÑO DEL MENÚ PRINCIPAL ---
+# --- 2. FUNCIONES DE LAS OPCIONES ---
+
+optimizador() {
+    echo -e "\n${AMARILLO}🧹 Iniciando optimización de sistema...${NC}"
+    pkg clean
+    echo -e "${VERDE}✅ Caché de paquetes limpia.${NC}"
+    sleep 2
+}
+
+instalador_python() {
+    clear
+    echo -e "${AZUL}╔══════════════════════════════════════════════════╗${NC}"
+    echo -e "${AZUL}║${NC}      ${VERDE}🐍 INSTALADOR DE PYTHON - @amle84${NC}       ${AZUL}║${NC}"
+    echo -e "${AZUL}╚══════════════════════════════════════════════════╝${NC}"
+    echo -e "${AMARILLO}📦 Descargando e instalando Python y Pip...${NC}"
+    
+    pkg update -y
+    pkg install python python-pip -y
+    
+    echo -e "\n${VERDE}✅ Python instalado con éxito.${NC}"
+    python --version
+    echo -e "${CYAN}Presiona Enter para volver...${NC}"
+    read
+}
+
+# --- 3. DISEÑO DEL MENÚ PRINCIPAL ---
 menu_principal() {
     clear
-    # Datos de sistema para Termux
+    # Datos de sistema
     MEM_TOTAL=$(free -m | grep Mem | awk '{print $2}')
     MEM_USADA=$(free -m | grep Mem | awk '{print $3}')
     
@@ -46,37 +72,22 @@ menu_principal() {
     echo -e " ${VERDE}[01]${NC} ${AMARILLO}➡${NC} CONTROL USUARIOS (SSH/SSL/VMESS)"
     echo -e " ${VERDE}[02]${NC} ${AMARILLO}➡${NC} [!] OPTIMIZAR VPS"
     echo -e " ${VERDE}[03]${NC} ${AMARILLO}➡${NC} CONTADOR ONLINE USERS"
-    echo -e " ${VERDE}[04]${NC} ${AMARILLO}➡${NC} INSTALADOR DE PROTOCOLOS"
+    echo -e " ${VERDE}[04]${NC} ${AMARILLO}➡${NC} INSTALADOR DE PYTHON"
     echo -e "${AZUL}════════════════════════════════════════════════════${NC}"
     echo -e " ${VERDE}[05]${NC} ${ROJO}[!] UPDATE / REMOVE${NC}  |  ${VERDE}[0]${NC} ${AMARILLO}➡${NC} SALIR"
     echo -e "${AZUL}════════════════════════════════════════════════════${NC}"
     echo -n " Opcion : "
     read opcion
 
-        case $opcion in
-        1) control_usuarios ;; # Esta la programaremos luego
-        2) 
-            echo -e "${AMARILLO}🧹 Iniciando optimización...${NC}"
-            sleep 1
-            pkg clean # Limpia archivos temporales de paquetes
-            echo -e "${VERDE}✅ Memoria de paquetes limpiada.${NC}"
-            sleep 1
-            echo -e "${VERDE}🚀 Sistema optimizado con éxito.${NC}"
-            sleep 2
-            menu_principal
-            ;;
-        0) 
-            echo -e "${ROJO}Saliendo del panel... 👋${NC}"
-            exit 0 
-            ;;
-        *) 
-            echo -e "${ROJO}⚠️ Opción no válida.${NC}"
-            sleep 1
-            menu_principal 
-            ;;
+    case $opcion in
+        1) echo -e "${VERDE}Función en desarrollo...${NC}"; sleep 2; menu_principal ;;
+        2) optimizador; menu_principal ;;
+        3) echo -e "${VERDE}Buscando usuarios online...${NC}"; sleep 2; menu_principal ;;
+        4) instalador_python; menu_principal ;;
+        0) echo -e "${ROJO}Saliendo... 👋${NC}"; exit 0 ;;
+        *) echo -e "${ROJO}Opcion invalida${NC}"; sleep 1; menu_principal ;;
     esac
-
 }
 
-# Ejecutar el menú
+# Ejecutar el programa
 menu_principal
