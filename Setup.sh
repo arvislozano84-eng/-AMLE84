@@ -2,7 +2,6 @@
 
 # --- CONFIGURACIÓN ---
 URL_KEYS="https://raw.githubusercontent.com/arvislozano84-eng/-AMLE84/refs/heads/main/keys.txt"
-# URL de tu script en GitHub para el Auto-Update
 URL_SCRIPT="https://raw.githubusercontent.com/arvislozano84-eng/-AMLE84/refs/heads/main/setup.sh"
 
 # COLORES
@@ -21,7 +20,8 @@ echo -e "${AZUL}━━━━━━━━━━━━━━━━━━━━━�
 echo -n "🔑 INGRESA TU KEY: "
 read user_key
 
-if [[ "$user_key" == "@AMLE84" ]] || curl -s "$URL_KEYS" | grep -qw "$user_key"; then
+# Validación remota vía GitHub
+if [[ "$user_key" == "@AMLE84" ]] || curl -sL "$URL_KEYS" | grep -qw "$user_key"; then
     echo -e "${VERDE}✅ ACCESO CONCEDIDO.${NC}"
     sleep 2
 else
@@ -29,7 +29,46 @@ else
     exit 1
 fi
 
-# --- 2. FUNCIONES DE LAS OPCIONES ---
+# --- 2. FUNCIONES DE GESTIÓN ---
+
+control_usuarios() {
+    clear
+    echo -e "${AZUL}╔══════════════════════════════════════════════════╗${NC}"
+    echo -e "${AZUL}║${NC}       ${VERDE}👤 GESTIÓN DE USUARIOS - @amle84${NC}        ${AZUL}║${NC}"
+    echo -e "${AZUL}╚══════════════════════════════════════════════════╝${NC}"
+    echo -e " ${VERDE}[1]${NC} ${AMARILLO}➡${NC} CREAR NUEVO USUARIO"
+    echo -e " ${VERDE}[2]${NC} ${AMARILLO}➡${NC} LISTAR USUARIOS REGISTRADOS"
+    echo -e " ${VERDE}[3]${NC} ${AMARILLO}➡${NC} ELIMINAR USUARIO (BETA)"
+    echo -e " ${VERDE}[0]${NC} ${AMARILLO}➡${NC} VOLVER AL MENÚ"
+    echo -e "${AZUL}════════════════════════════════════════════════════${NC}"
+    echo -n " Seleccione una opción: "
+    read opt_user
+
+    case $opt_user in
+        1)
+            echo -n "📝 Nombre del nuevo usuario: "
+            read new_name
+            echo "$new_name" >> lista_usuarios.db
+            echo -e "${VERDE}✅ Usuario $new_name guardado localmente.${NC}"
+            sleep 2; control_usuarios ;;
+        2)
+            echo -e "\n${CYAN}📋 LISTA DE USUARIOS REGISTRADOS:${NC}"
+            if [ -f lista_usuarios.db ]; then
+                echo -e "${AMARILLO}--------------------------------${NC}"
+                cat -n lista_usuarios.db
+                echo -e "${AMARILLO}--------------------------------${NC}"
+            else
+                echo "No hay usuarios registrados todavía."
+            fi
+            echo -e "\n${CYAN}Presiona Enter para volver...${NC}"
+            read; control_usuarios ;;
+        3)
+            echo -e "${ROJO}⚠️ Función en desarrollo para la V2.0${NC}"
+            sleep 2; control_usuarios ;;
+        0) menu_principal ;;
+        *) echo -e "${ROJO}Opción inválida${NC}"; sleep 1; control_usuarios ;;
+    esac
+}
 
 optimizador() {
     echo -e "\n${AMARILLO}🧹 Iniciando optimización de sistema...${NC}"
@@ -57,7 +96,7 @@ instalador_python() {
     echo -e "${AZUL}╔══════════════════════════════════════════════════╗${NC}"
     echo -e "${AZUL}║${NC}      ${VERDE}🐍 INSTALADOR DE PYTHON - @amle84${NC}       ${AZUL}║${NC}"
     echo -e "${AZUL}╚══════════════════════════════════════════════════╝${NC}"
-    echo -e "${AMARILLO}📦 Descargando e instalando Python y Pip...${NC}"
+    echo -e "${AMARILLO}📦 Instalando Python y Pip...${NC}"
     pkg update -y && pkg install python python-pip -y
     echo -e "\n${VERDE}✅ Python instalado con éxito.${NC}"
     python --version
@@ -69,13 +108,13 @@ actualizar_script() {
     echo -e "${AMARILLO}🔄 Buscando actualizaciones en GitHub...${NC}"
     wget -O setup.sh "$URL_SCRIPT" &> /dev/null
     chmod +x setup.sh
-    echo -e "${VERDE}✅ Script actualizado. Reiniciando...${NC}"
+    echo -e "${VERDE}✅ Script actualizado correctamente.${NC}"
     sleep 2
     ./setup.sh
     exit
 }
 
-# --- 3. DISEÑO DEL MENÚ PRINCIPAL ---
+# --- 3. MENÚ PRINCIPAL ---
 menu_principal() {
     clear
     MEM_TOTAL=$(free -m | grep Mem | awk '{print $2}')
@@ -88,7 +127,7 @@ menu_principal() {
     echo -e "${CYAN} 🔹 S.O:${NC} Android  ${CYAN}🔹 IP:${NC} $(curl -s https://ifconfig.me)"
     echo -e "${CYAN} 🔹 RAM:${NC} ${MEM_USADA}MB / ${MEM_TOTAL}MB  ${CYAN}🔹 FECHA:${NC} $(date +'%d/%m/%Y')"
     echo -e "${AZUL}════════════════════════════════════════════════════${NC}"
-    echo -e " ${VERDE}[01]${NC} ${AMARILLO}➡${NC} CONTROL USUARIOS (SSH/SSL/VMESS)"
+    echo -e " ${VERDE}[01]${NC} ${AMARILLO}➡${NC} CONTROL USUARIOS (DATABASE)"
     echo -e " ${VERDE}[02]${NC} ${AMARILLO}➡${NC} [!] OPTIMIZAR VPS"
     echo -e " ${VERDE}[03]${NC} ${AMARILLO}➡${NC} CONTADOR ONLINE USERS"
     echo -e " ${VERDE}[04]${NC} ${AMARILLO}➡${NC} INSTALADOR DE PYTHON"
@@ -99,7 +138,7 @@ menu_principal() {
     read opcion
 
     case $opcion in
-        1) echo -e "${VERDE}Función en desarrollo...${NC}"; sleep 2; menu_principal ;;
+        1) control_usuarios ;;
         2) optimizador; menu_principal ;;
         3) contador_online; menu_principal ;;
         4) instalador_python; menu_principal ;;
@@ -109,5 +148,6 @@ menu_principal() {
     esac
 }
 
-# Ejecutar el programa
+# Iniciar el programa
 menu_principal
+
