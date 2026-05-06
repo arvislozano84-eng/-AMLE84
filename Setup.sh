@@ -38,7 +38,7 @@ control_usuarios() {
     echo -e "${AZUL}╚══════════════════════════════════════════════════╝${NC}"
     echo -e " ${VERDE}[1]${NC} ${AMARILLO}➡${NC} CREAR NUEVO USUARIO"
     echo -e " ${VERDE}[2]${NC} ${AMARILLO}➡${NC} LISTAR USUARIOS REGISTRADOS"
-    echo -e " ${VERDE}[3]${NC} ${AMARILLO}➡${NC} ELIMINAR USUARIO (BETA)"
+    echo -e " ${VERDE}[3]${NC} ${AMARILLO}➡${NC} ELIMINAR USUARIO"
     echo -e " ${VERDE}[0]${NC} ${AMARILLO}➡${NC} VOLVER AL MENÚ"
     echo -e "${AZUL}════════════════════════════════════════════════════${NC}"
     echo -n " Seleccione una opción: "
@@ -49,21 +49,44 @@ control_usuarios() {
             echo -n "📝 Nombre del nuevo usuario: "
             read new_name
             echo "$new_name" >> lista_usuarios.db
-            echo -e "${VERDE}✅ Usuario $new_name guardado localmente.${NC}"
+            echo -e "${VERDE}✅ Usuario $new_name guardado con éxito.${NC}"
             sleep 2; control_usuarios ;;
         2)
-            echo -e "\n${CYAN}📋 LISTA DE USUARIOS REGISTRADOS:${NC}"
-            if [ -f lista_usuarios.db ]; then
+            echo -e "\n${CYAN}📋 LISTA DE USUARIOS:${NC}"
+            if [ -f lista_usuarios.db ] && [ -s lista_usuarios.db ]; then
                 echo -e "${AMARILLO}--------------------------------${NC}"
                 cat -n lista_usuarios.db
                 echo -e "${AMARILLO}--------------------------------${NC}"
             else
-                echo "No hay usuarios registrados todavía."
+                echo -e "${ROJO}La lista está vacía actualmente.${NC}"
             fi
-            echo -e "\n${CYAN}Presiona Enter para volver...${NC}"
+            echo -e "\n${AMARILLO}Presiona Enter para volver...${NC}"
             read; control_usuarios ;;
         3)
-            echo -e "${ROJO}⚠️ Función en desarrollo para la V2.0${NC}"
+            if [ -f lista_usuarios.db ] && [ -s lista_usuarios.db ]; then
+                echo -e "\n${ROJO}--- ELIMINAR USUARIO ---${NC}"
+                cat -n lista_usuarios.db
+                echo -n "Escribe el NÚMERO del usuario a borrar: "
+                read num_borrar
+                
+                # Extraemos el nombre para confirmar
+                USER_NAME=$(sed -n "${num_borrar}p" lista_usuarios.db)
+                
+                if [ -z "$USER_NAME" ]; then
+                    echo -e "${ROJO}Número inválido.${NC}"
+                else
+                    echo -n "⚠️ ¿Seguro que quieres borrar a $USER_NAME? (s/n): "
+                    read confirmar
+                    if [[ "$confirmar" == "s" || "$confirmar" == "S" ]]; then
+                        sed -i "${num_borrar}d" lista_usuarios.db
+                        echo -e "${VERDE}✅ Usuario eliminado correctamente.${NC}"
+                    else
+                        echo -e "${AMARILLO}Operación cancelada.${NC}"
+                    fi
+                fi
+            else
+                echo -e "${ROJO}No hay usuarios para eliminar.${NC}"
+            fi
             sleep 2; control_usuarios ;;
         0) menu_principal ;;
         *) echo -e "${ROJO}Opción inválida${NC}"; sleep 1; control_usuarios ;;
@@ -150,4 +173,3 @@ menu_principal() {
 
 # Iniciar el programa
 menu_principal
-
