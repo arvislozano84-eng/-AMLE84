@@ -2,7 +2,7 @@
 
 # --- CONFIGURACIÓN ---
 URL_KEYS="https://raw.githubusercontent.com/arvislozano84-eng/-AMLE84/refs/heads/main/keys.txt"
-URL_SCRIPT="https://raw.githubusercontent.com/arvislozano84-eng/-AMLE84/refs/heads/main/setup.sh"
+URL_SCRIPT="https://raw.githubusercontent.com/arvislozano84-eng/-AMLE84/refs/heads/main/Setup.sh"
 
 # COLORES
 VERDE='\033[1;32m'
