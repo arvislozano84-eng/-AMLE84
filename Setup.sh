@@ -9,31 +9,6 @@ CYAN='\033[0;36m'
 NC='\033[0m'
 
 # --- CONFIGURACIÓN ---
-# Asegúrate de que este link sea el tuyo de GitHub (en RAW)
-URL_KEYS="https://raw.githubusercontent.com/arvislozano84-eng/-AMLE84/refs/heads/main/keys.txt"
-URL_SCRIPT="https://raw.githubusercontent.com/arvislozano84-eng/-AMLE84/refs/heads/main/setup.sh"
-# --- VERIFICACIÓN INICIAL DE BASE DE DATOS ---
-# Si el archivo no existe o está vacío, crea el admin por defecto
-if [ ! -f "$DB_USUARIOS" ] || [ ! -s "$DB_USUARIOS" ]; then
-    echo "admin|1234" > "$DB_USUARIOS"
-fi
-
-# --- FUNCIÓN DE LOGIN ---
-login_sistema() {
-    clear
-    echo -e "${AZUL}╔════════════════════════════════════════╗${NC}"
-    echo -e "${AZUL}║${NC}   ${AMARILLO}🔐 ACCESO RESTRINGIDO - @amle84$…
-[3:09 p. m., 7/5/2026] Arvis Marcelo Lozano Escorcia: #!/bin/bash
-
-# --- COLORES ---
-VERDE='\033[0;32m'
-AZUL='\033[0;34m'
-AMARILLO='\033[1;33m'
-ROJO='\033[0;31m'
-CYAN='\033[0;36m'
-NC='\033[0m'
-
-# --- CONFIGURACIÓN ---
 URL_SCRIPT="https://raw.githubusercontent.com/arvislozano84-eng/-AMLE84/refs/heads/main/Setup.sh"
 DB_USUARIOS="lista_usuarios.db"
 
@@ -72,10 +47,10 @@ control_usuarios() {
     echo -e "${AZUL}╔══════════════════════════════════════════════════╗${NC}"
     echo -e "${AZUL}║${NC}       ${VERDE}👤 GESTIÓN DE USUARIOS - @amle84${NC}        ${AZUL}║${NC}"
     echo -e "${AZUL}╚══════════════════════════════════════════════════╝${NC}"
-    echo -e " ${VERDE}[1]${NC} ${AMARILLO}➡️${NC} GENERAR NUEVO USUARIO/KEY"
-    echo -e " ${VERDE}[2]${NC} ${AMARILLO}➡️${NC} VER LISTA DE KEYS ACTIVAS"
-    echo -e " ${VERDE}[3]${NC} ${AMARILLO}➡️${NC} ELIMINAR USUARIO/KEY"
-    echo -e " ${VERDE}[0]${NC} ${AMARILLO}➡️${NC} VOLVER AL MENÚ"
+    echo -e " ${VERDE}[1]${NC} ${AMARILLO}➡${NC} GENERAR NUEVO USUARIO/KEY"
+    echo -e " ${VERDE}[2]${NC} ${AMARILLO}➡${NC} VER LISTA DE KEYS ACTIVAS"
+    echo -e " ${VERDE}[3]${NC} ${AMARILLO}➡${NC} ELIMINAR USUARIO/KEY"
+    echo -e " ${VERDE}[0]${NC} ${AMARILLO}➡${NC} VOLVER AL MENÚ"
     echo -e "${AZUL}════════════════════════════════════════════════════${NC}"
     echo -n " Seleccione una opción: "
     read opt_user
@@ -138,19 +113,19 @@ actualizar_sistema() {
 # --- MENÚ PRINCIPAL ---
 menu_principal() {
     clear
-    echo -e "${AZUL}    __  _    _   ____ ${NC}"
-    echo -e "${AZUL}   / _ \/   |  / | / / ___/ / ${NC}"
-    echo -e "${AZUL}  / // / /| | /  |/ / _/ / /  ${NC}"
-    echo -e "${AZUL} / _/ __ |/ /|  / /_/ /_${NC}"
-    echo -e "${AZUL}//   //  |// |/_/__/${NC} ${AMARILLO}v2.0${NC}"
+    echo -e "${AZUL}    ____  ___    _   __________ ${NC}"
+    echo -e "${AZUL}   / __ \/   |  / | / / ____/ / ${NC}"
+    echo -e "${AZUL}  / /_/ / /| | /  |/ / __/ / /  ${NC}"
+    echo -e "${AZUL} / ____/ ___ |/ /|  / /___/ /___${NC}"
+    echo -e "${AZUL}/_/   /_/  |_/_/ |_/_____/_____/${NC} ${AMARILLO}v2.0${NC}"
     echo -e "${CYAN}      Developer: @amle84${NC}"
     echo -e "${AZUL}════════════════════════════════════════════════════${NC}"
-    echo -e " ${VERDE}[01]${NC} ➡️ GESTIÓN DE USUARIOS / KEYS"
-    echo -e " ${VERDE}[02]${NC} ➡️ INSTALAR REQUISITOS (GIT, PYTHON, ETC)"
-    echo -e " ${VERDE}[03]${NC} ➡️ INSTALAR SQLMAP"
-    echo -e " ${VERDE}[04]${NC} ➡️ INSTALAR NMAP"
-    echo -e " ${VERDE}[05]${NC} ➡️ ACTUALIZAR SISTEMA"
-    echo -e " ${VERDE}[00]${NC} ➡️ SALIR"
+    echo -e " ${VERDE}[01]${NC} ➡ GESTIÓN DE USUARIOS / KEYS"
+    echo -e " ${VERDE}[02]${NC} ➡ INSTALAR REQUISITOS (GIT, PYTHON, ETC)"
+    echo -e " ${VERDE}[03]${NC} ➡ INSTALAR SQLMAP"
+    echo -e " ${VERDE}[04]${NC} ➡ INSTALAR NMAP"
+    echo -e " ${VERDE}[05]${NC} ➡ ACTUALIZAR SISTEMA"
+    echo -e " ${VERDE}[00]${NC} ➡ SALIR"
     echo -e "${AZUL}════════════════════════════════════════════════════${NC}"
     echo -n " Seleccione una opción: "
     read opcion
